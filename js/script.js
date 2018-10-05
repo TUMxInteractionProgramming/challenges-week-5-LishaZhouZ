@@ -80,6 +80,10 @@ function selectTab(tabId) {
  */
 function toggleEmojis() {
     $('#emojis').toggle(); // #toggle
+    $('#emojis').empty();
+    for(var i=0;i<emojis.length;i++){    
+        $('<span>').html(emojis[i]).appendTo('#emojis');
+        }
 }
 
 /**
@@ -104,10 +108,17 @@ function Message(text) {
 function sendMessage() {
     // #8 Create a new message to send and log it.
     //var message = new Message("Hello chatter");
-
     // #8 let's now use the real message #input
+    if ($('#message').val().length!=0){
     var message = new Message($('#message').val());
     console.log("New message:", message);
+
+    //push the message into current channel
+    currentChannel.messages.push(message);    
+    currentChannel.messageCount++;
+    
+    //refresh the list(message count)
+    listChannels();
 
     // #8 convenient message append with jQuery:
     $('#messages').append(createMessageElement(message));
@@ -118,6 +129,7 @@ function sendMessage() {
 
     // #8 clear the message input
     $('#message').val('');
+    }
 }
 
 /**
@@ -140,7 +152,7 @@ function createMessageElement(messageObject) {
         messageObject.createdOn.toLocaleString() +
         '<em>' + expiresIn+ ' min. left</em></h3>' +
         '<p>' + messageObject.text + '</p>' +
-        '<button>+5 min.</button>' +
+        '<button class="btns-act">+5 min.</button>' +
         '</div>';
 }
 
@@ -148,13 +160,12 @@ function createMessageElement(messageObject) {
 function listChannels() {
     // #8 channel onload
     //$('#channels ul').append("<li>New Channel</li>")
-
+    
     // #8 five new channels
-    $('#channels ul').append(createChannelElement(yummy));
-    $('#channels ul').append(createChannelElement(sevencontinents));
-    $('#channels ul').append(createChannelElement(killerapp));
-    $('#channels ul').append(createChannelElement(firstpersononmars));
-    $('#channels ul').append(createChannelElement(octoberfest));
+    $('#channels ul').empty();
+    for(var i=0;i<channels.length;i++){
+        $('#channels ul').append(createChannelElement(channels[i]));
+    }
 }
 
 /**
@@ -192,4 +203,54 @@ function createChannelElement(channelObject) {
 
     // return the complete channel
     return channel;
+}
+
+
+/*
+  return<0 p1 first
+  return>0 p2 first
+  */
+function compareNew(p1,p2){
+    return(p2.createdOn-p1.createdOn);
+}
+
+function compareTrending(p1,p2){
+    return (p2.messageCount-p1.messageCount);
+}
+
+function compareFavourites(p1,p2){
+    return (p2.starred-p1.starred)    
+}
+
+function addChannel(){
+    $("#messages").empty();
+    $("#chat h1").empty();
+
+    $('<span>').attr('id','addchannel').appendTo("#chat h1");
+    $('<input>').attr({'type':'text','placeholder':'Enter a #ChannelName','maxlength':140}).appendTo("#addchannel");
+    
+    $('<button>').addClass('btns-prmy').html('ABORT').attr('onClick','abortchannel()').appendTo('#addchannel');
+    $('<i>').addClass('fas fa-times').prependTo('#addchannel button');
+    $("#send-btn").empty().html('CREATE').css('font-size','14px');
+    $("#send-btn").removeAttr('onclick');
+    $("#send-btn").attr('onClick','createChannel()');
+}
+
+function abortchannel(){
+    console.log('abort channel');
+    $( '#addchannel' ).replaceWith("<span id='channel-name'>"+currentChannel.name+
+        "</span><small id='channel-location'>by <strong>cheeses.yard.applies</strong></small>"+
+        "<i class='fas fa-star' onclick='star()'></i>");
+    $("#send-btn").empty();
+    $('<i>').addClass('fas fa-arrow-right').css('font-size','24px').appendTo("#send-btn");
+    $("#send-btn").removeAttr('onclick');
+    $("#send-btn").attr('onClick','sendMessage()');
+}
+
+function createChannel(){
+    if($('#addchannel input').val().length!=0){
+        if($('#addchannel input').val()[0]=='#'){
+        sendMessage();
+        }
+    }
 }
