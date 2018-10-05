@@ -4,7 +4,7 @@ function Channel(name,createdBy){
     this.createdOn= new Date("2016-04-01");
     this.createdBy=createdBy;
     this.starred= false;
-    this.expiresln=100;
+    this.expiresIn=100;
     this.messageCount=999;
     this.messages=[];
     console.log('Channel '+this.name+' is created');    
