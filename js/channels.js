@@ -1,4 +1,16 @@
 /** #7 #chlob #new: the new yummy channel */
+function Channel(name,createdBy){
+    this.name=name;
+    this.createdOn= new Date("2016-04-01");
+    this.createdBy=createdBy;
+    this.starred= false;
+    this.expiresln=100;
+    this.messageCount=999;
+    this.messages=[];
+    console.log('Channel '+this.name+' is created');    
+}
+
+
 var yummy = {
     name: "#Yummy",
     createdOn: new Date(2016, 03, 01), /* month 0 is jan. */

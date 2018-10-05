@@ -8,6 +8,7 @@ var currentChannel;
 /** #7 We simply initialize it with the channel selected by default - sevencontinents */
 currentChannel = sevencontinents;
 
+
 /** Store my current (sender) location
  */
 var currentLocation = {
@@ -239,7 +240,7 @@ function addChannel(){
 function abortchannel(){
     console.log('abort channel');
     $( '#addchannel' ).replaceWith("<span id='channel-name'>"+currentChannel.name+
-        "</span><small id='channel-location'>by <strong>cheeses.yard.applies</strong></small>"+
+        "</span><small id='channel-location'> by <strong>cheeses.yard.applies</strong></small>"+
         "<i class='fas fa-star' onclick='star()'></i>");
     $("#send-btn").empty();
     $('<i>').addClass('fas fa-arrow-right').css('font-size','24px').appendTo("#send-btn");
@@ -250,7 +251,13 @@ function abortchannel(){
 function createChannel(){
     if($('#addchannel input').val().length!=0){
         if($('#addchannel input').val()[0]=='#'){
-        sendMessage();
+            
+            var newChannel=new Channel($('#addchannel input').val(),'location.unknow.what');
+            channels.push(newChannel);
+            currentChannel=newChannel;
+            listChannels();
+            sendMessage();
+            abortchannel();
         }
     }
 }
